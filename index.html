@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#2b2f36">
+    <title> Historicos Personajes - Explocion Arena</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="styles.css">
+
+
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.css">
+    <link rel="stylesheet" href="tour.css">
+
+</head>
+<body>
+
+    <!-- Pantalla de carga -->
+    <div id="preloader" role="status" aria-live="polite" aria-label="Cargando">
+        <div class="pre-escena">
+            <div class="pre-texto">
+                <div class="pre-palabra" role="img" aria-label="Trivia"><span style="--i:0">T</span><span style="--i:1">R</span><span style="--i:2">I</span><span style="--i:3">V</span><span style="--i:4">I</span><span style="--i:5">A</span></div>
+                <p class="pre-sub">EXPLOCION ARENA</p>
+            </div>
+        </div>
+        <img class="pre-logo" src="LogoSinFondo.png" alt="Logotipo Explocion Arena" width="380" height="380">
+        <button type="button" class="pre-gate" id="pre-gate" hidden><span>TOCA PARA COMENZAR</span><small>🔊 CON SONIDO</small></button>
+    </div>
+
+    <audio  loop autoplay preload="auto" id="musica">
+        <source src="musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <button type="button" id="btn-musica" class="musica-btn" aria-label="Pausar música" aria-pressed="false" title="Pausar música">🔊</button>
+
+
+
+    <main class="page-shell login-shell" id="inicio">
+        <section class="intro login-intro">
+            <img class="login-logo" src="logo.png" alt="Logotipo Explocion Arena" width="120" height="120">
+            <p class="eyebrow"><span></span> IDENTIFICACIÓN DE JUGADOR</p>
+            <h1>Acceso a la <span>Arena</span></h1>
+            <p class="intro-copy">Elige un nick name y una contraseña para desbloquear el archivo de personajes y comenzar el desafío.</p>
+
+            <div class="login-card">
+                <input id="usuario" class="login-input" type="text" placeholder="Tu nick name" maxlength="30" autocomplete="username">
+                <input id="clave" class="login-input is-last" type="password" placeholder="Elige una contraseña" maxlength="40" autocomplete="new-password">
+                <p id="error" class="login-error"></p>
+                <button type="button" class="login-btn" id="btn-entrar" onclick="entrar()">Entrar al Sistema</button>
+            </div>
+            <button type="button" class="tour-btn" data-tour="login">Ver guía de acceso</button>
+        </section>
+    </main>
+
+
+    <div id="juego-principal" style="display: none;">
+        <main class="page-shell">
+            <header class="topbar">
+                <a class="brand" href="index.html" aria-label="Explocion Arena, inicio">
+                    <span class="brand-mark" aria-hidden="true"><img src="logo.png" alt=""></span>
+                    <span>Explocion<span class="brand-light">ARENA</span></span>
+                </a>
+                <nav class="topbar-actions" aria-label="Navegación principal">
+                    <button type="button" class="ranking-btn" onclick="irAlRanking()">🏆 Ver Ranking</button>
+                    <button type="button" class="ranking-btn" onclick="cerrarSesion()">Cerrar sesión</button>
+                    <span class="status"><span class="status-dot"></span> <span id="saludo">¿Conoces al personaje?</span></span>
+                    <a class="nav-link quiz-link" id="enlace-formulario" href="https://sites.google.com/view/explocionarena/p%C3%A1gina-principal" target="_blank" rel="noopener">Ir a Cuestionario <span aria-hidden="true">↗</span></a>
+                </nav>
+            </header>
+
+            <section class="intro" aria-labelledby="page-title">
+                <p class="eyebrow"><span></span> SELECCIÓN DE JUGADORES</p>
+                <h1 id="page-title"> Personajes <span>importantes</span></h1>
+                <p class="intro-copy">Conoce a los protagonistas de esta aventura. Toca la imagen de un personaje para jugar su trivia.</p>
+                <button type="button" class="tour-btn" data-tour="juego">¿Cómo se juega? Ver guía</button>
+            </section>
+
+            <section class="character-section" id="zona-juegos" aria-label="Lista de personajes">
+                <div class="section-heading">
+                    <h2>Elige tu personaje Misterioso</h2>
+                    
+                </div>
+                <ul class="character-grid">
+                    <li class="character-card card-one">
+                        <div class="character-link">
+                            <span class="card-topline"><span> Personajes Historicos del Deporte </span><span class="character-number"></span></span>
+                            <button type="button" class="character-art art-one" data-character="0" aria-label="Preguntas de Religión y Filosofía">
+                                <span aria-hidden="true">¡Prueba tu Sabiduria!</span>
+                                <small class="art-hint">Jugar trivia</small>
+                            </button>
+                            <span class="character-info">
+                                <span class="character-name"> Personajes Historicos del Deporte </span>
+                                 </span>
+                        </div>
+                    </li>
+                    <li class="character-card card-two">
+                        <div class="character-link">
+                            <span class="card-topline"><span> Personajes Historicos </span><span class="character-number"></span></span>
+                            <button type="button" class="character-art art-two" data-character="1" aria-label="Jugar la trivia de Personaje 2">
+                                <span aria-hidden="true">¡Prueba tu Sabiduria!</span>
+                                <small class="art-hint">Jugar trivia</small>
+                            </button>
+                            <span class="character-info">
+                                <span class="character-name"> Personajes Historicos </span>
+                            </span>
+                        </div>
+                    </li>
+                    <li class="character-card card-three">
+                        <div class="character-link">
+                            <span class="card-topline"><span> Series, peliculas y personajes de ficción </span><span class="character-number"></span></span>
+                            <button type="button" class="character-art art-three" data-character="2" aria-label="Jugar la trivia de Personaje 3">
+                                <span aria-hidden="true">¡Prueba tu Sabiduria!</span>
+                                <small class="art-hint">Jugar trivia</small>
+                            </button>
+                            <span class="character-info">
+                                <span class="character-name"> Series, peliculas y personajes de ficción </span>
+                            </span>
+                        </div>
+                    </li>
+                    <li class="character-card card-four">
+                        <div class="character-link">
+                            <span class="card-topline"><span> Preguntas por azar </span><span class="character-number"></span></span>
+                            <button type="button" class="character-art art-four" data-character="3" aria-label="Jugar la trivia de preguntas al azar">
+                                <span aria-hidden="true">¡Prueba tu Sabiduria!</span>
+                                <small class="art-hint">Jugar trivia</small>
+                            </button>
+                            <span class="character-info">
+                                <span class="character-name"> Preguntas al azar </span>
+                            </span>
+                        </div>
+                    </li>
+                    <li class="character-card card-five">
+                        <div class="character-link">
+                            <span class="card-topline"><span> Contra reloj ⏱ </span><span class="character-number"></span></span>
+                            <button type="button" class="character-art art-five" data-character="4" aria-label="Jugar la trivia contra reloj">
+                                <span aria-hidden="true">¡Gana tiempo!</span>
+                                <small class="art-hint">+10 s por acierto</small>
+                            </button>
+                            <span class="character-info">
+                                <span class="character-name"> Contra reloj </span>
+                            </span>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <section class="ranking-section" id="ranking-portada" aria-labelledby="ranking-portada-titulo">
+                <div class="section-heading">
+                    <h2 id="ranking-portada-titulo">Ranking por categoría</h2>
+                    <span class="character-count">TOP 5</span>
+                </div>
+                <div class="rk-grid">
+                    <article class="rk-card" data-slot="0">
+                        <header class="rk-card-head">
+                            <h3>Personajes del futbol</h3>
+                            <span class="rk-num">01</span>
+                        </header>
+                        <ol class="rk-list" id="rk-slot-0"></ol>
+                        <button type="button" class="rk-more" data-slot="0">Ver ranking completo</button>
+                    </article>
+                    <article class="rk-card" data-slot="1">
+                        <header class="rk-card-head">
+                            <h3>Personajes Historicos</h3>
+                            <span class="rk-num">02</span>
+                        </header>
+                        <ol class="rk-list" id="rk-slot-1"></ol>
+                        <button type="button" class="rk-more" data-slot="1">Ver ranking completo</button>
+                    </article>
+                    <article class="rk-card" data-slot="2">
+                        <header class="rk-card-head">
+                            <h3>Personajes ramdoms</h3>
+                            <span class="rk-num">03</span>
+                        </header>
+                        <ol class="rk-list" id="rk-slot-2"></ol>
+                        <button type="button" class="rk-more" data-slot="2">Ver ranking completo</button>
+                    </article>
+                    <article class="rk-card" data-slot="3">
+                        <header class="rk-card-head">
+                            <h3>Preguntas al azar</h3>
+                            <span class="rk-num">04</span>
+                        </header>
+                        <ol class="rk-list" id="rk-slot-3"></ol>
+                        <button type="button" class="rk-more" data-slot="3">Ver ranking completo</button>
+                    </article>
+                    <article class="rk-card" data-slot="4">
+                        <header class="rk-card-head">
+                            <h3>Contra reloj</h3>
+                            <span class="rk-num">05</span>
+                        </header>
+                        <ol class="rk-list" id="rk-slot-4"></ol>
+                        <button type="button" class="rk-more" data-slot="4">Ver ranking completo</button>
+                    </article>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <span>Explocion ARENA <span class="footer-separator">/</span> ¿Conoces al personaje?</span>
+                <span>ELIGE, DESCUBRE, JUEGA.</span>
+            </footer>
+        </main>
+
+
+        <dialog class="qa-modal" id="qa-modal" aria-labelledby="qa-title">
+            <div class="qa-panel">
+                <header class="qa-header">
+                    <div>
+                        <p class="qa-eyebrow" id="qa-eyebrow"></p>
+                        <h2 id="qa-title"></h2>
+                    </div>
+                    <button type="button" class="qa-close" id="qa-close" aria-label="Cerrar">&times;</button>
+                </header>
+                <div class="qz-bar"><span id="qz-progress"></span><span class="qz-timer" id="qz-timer">2:00</span></div>
+                <div class="qz-track"><div class="qz-fill" id="qz-fill"></div></div>
+                <div class="qa-list" id="qa-list" aria-live="polite"></div>
+                <a class="qa-profile" id="qa-profile" href="#"></a>
+            </div>
+        </dialog>
+
+
+        <dialog class="qa-modal" id="ranking-modal" aria-labelledby="ranking-title">
+            <div class="qa-panel" style="max-width: 760px;">
+                <header class="qa-header">
+                    <div>
+                        <p class="qa-eyebrow">SALÓN DE LA FAMA</p>
+                        <h2 id="ranking-title">Ranking Global</h2>
+                    </div>
+                    <button type="button" class="qa-close" onclick="cerrarRanking()" aria-label="Cerrar">&times;</button>
+                </header>
+                <div id="ranking-tabs" class="rk-tabs" role="tablist" aria-label="Ranking por personajes"></div>
+                <div id="ranking-list" style="padding: 20px 0; color: #1b1e23; max-height: 60vh; overflow-y: auto;">
+
+                </div>
+            </div>
+        </dialog>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCYVsh3pyVYBB9KBRIh0Y0NBFIcsLPkKkI",
+            authDomain: "arcade-arena-26.firebaseapp.com",
+            databaseURL: "https://arcade-arena-26-default-rtdb.firebaseio.com",
+            projectId: "arcade-arena-26",
+            storageBucket: "arcade-arena-26.firebasestorage.app",
+            messagingSenderId: "428418036939",
+            appId: "1:428418036939:web:523a7225e1077d8b50174e"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        let jugadorNombreActual = "";
+        
+        const CLAVE_SESION = "arenaJugador";
+
+        function entrar() {
+            const usuario = document.getElementById("usuario").value.trim();
+            const clave = document.getElementById("clave").value;
+            const errorEl = document.getElementById("error");
+            const btn = document.getElementById("btn-entrar");
+            errorEl.textContent = "";
+
+            if (usuario.length < 3) {
+                errorEl.textContent = "El nick name debe tener al menos 3 caracteres.";
+                return;
+            }
+            if (clave.length < 4) {
+                errorEl.textContent = "La contraseña debe tener al menos 4 caracteres.";
+                return;
+            }
+
+            const usuarioKey = usuario.toLowerCase();
+            btn.disabled = true;
+            btn.textContent = "Verificando...";
+
+            db.ref('usuarios/' + usuarioKey).once('value').then(function (snap) {
+                const datos = snap.val();
+
+                if (datos === null) {
+                    return db.ref('usuarios/' + usuarioKey).set({
+                        clave: clave,
+                        nick: usuario,
+                        fechaRegistro: new Date().toLocaleDateString('es-CL')
+                    }).then(function () {
+                        try { localStorage.setItem(CLAVE_SESION, JSON.stringify({ usuario: usuarioKey, nick: usuario })); } catch (e) {}
+                        mostrarJuego(usuario);
+                    });
+                }
+
+                if (datos.clave !== clave) {
+                    errorEl.textContent = "Ese nick name ya está ocupado. Elige otro o revisa tu contraseña.";
+                    btn.disabled = false;
+                    btn.textContent = "Entrar al Sistema";
+                    return;
+                }
+
+                const nick = datos.nick || usuario;
+                try { localStorage.setItem(CLAVE_SESION, JSON.stringify({ usuario: usuarioKey, nick: nick })); } catch (e) {}
+                mostrarJuego(nick);
+            }).catch(function () {
+                errorEl.textContent = "No se pudo conectar con el servidor. Intenta de nuevo.";
+                btn.disabled = false;
+                btn.textContent = "Entrar al Sistema";
+            });
+        }
+
+        function mostrarJuego(nick) {
+            jugadorNombreActual = nick.toUpperCase();
+            document.getElementById("inicio").style.display = "none";
+            document.getElementById("juego-principal").style.display = "block";
+            document.getElementById("saludo").textContent = "¡HOLA, " + jugadorNombreActual + "! - ARCHIVO DE PERSONAJES";
+            cargarRankingPortada();
+            if (window.TourArena) window.TourArena.iniciarJuego(false);
+        }
+
+        function cerrarSesion() {
+            try { localStorage.removeItem(CLAVE_SESION); } catch (e) {}
+            jugadorNombreActual = "";
+            document.getElementById("juego-principal").style.display = "none";
+            document.getElementById("inicio").style.display = "flex";
+            document.getElementById("usuario").value = "";
+            document.getElementById("clave").value = "";
+            document.getElementById("error").textContent = "";
+            const btn = document.getElementById("btn-entrar");
+            btn.disabled = false;
+            btn.textContent = "Entrar al Sistema";
+        }
+
+        function esc(texto) {
+            return String(texto === undefined || texto === null ? "" : texto)
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        }
+
+        const SLOT_RELOJ = 4;
+        const NOMBRES_SLOT = ["Personajes del futbol", "Personajes Historicos", "Personajes ramdoms", "Preguntas al azar", "Contra reloj"];
+        const SLOT_POR_NOMBRE = {
+            "Carlos caszely": 0, "Cristiano Ronaldo": 0,
+            "Nicolas Copernico": 1, "Pitágoras": 1,
+            "¿Series, peliculas y personajes de ficción?": 2, "Personajes Del deporte": 2, "Personaje sorpresa 3": 2,
+            "Cultura general al azar": 3, "Datos curiosos al azar": 3,
+            "Contra reloj": 4
+        };
+        let rankingDatos = null;
+        let slotRankingActual = 0;
+
+        function slotDe(r) {
+            if (typeof r.slot === "number") return r.slot;
+            const s = SLOT_POR_NOMBRE[r.personaje];
+            return s === undefined ? -1 : s;
+        }
+
+        function formatoTiempo(seg) {
+            if (typeof seg !== "number") return "—";
+            return Math.floor(seg / 60) + ":" + String(seg % 60).padStart(2, "0");
+        }
+
+        function guardarEnRanking(personaje, puntos, totalPuntos, slot, duracion) {
+            if (!jugadorNombreActual || !(totalPuntos > 0)) return Promise.resolve();
+
+            return db.ref('rankings').push({
+                nombre: jugadorNombreActual,
+                personaje: personaje,
+                slot: slot,
+                puntos: puntos,
+                total: totalPuntos,
+                porcentaje: Math.round((puntos / totalPuntos) * 100),
+                duracion: duracion,
+                fecha: new Date().toLocaleDateString('es-CL'),
+                TIEMPO: new Date().toLocaleTimeString('es-CL')
+            });
+        }
+
+        // Orden: más porcentaje, más puntos y, a igualdad, menos tiempo.
+        function ordenarRanking(datos, slot, limite) {
+            const sinTiempo = Number.MAX_SAFE_INTEGER;
+            return datos
+                .filter(function (r) { return slotDe(r) === slot; })
+                .sort(function (a, b) {
+                    // Contra reloj: gana quien más aciertos logra; luego mejor porcentaje y menos tiempo.
+                    if (slot === SLOT_RELOJ) {
+                        return (b.puntos - a.puntos) || (b.porcentaje - a.porcentaje) ||
+                            ((typeof a.duracion === "number" ? a.duracion : sinTiempo) - (typeof b.duracion === "number" ? b.duracion : sinTiempo));
+                    }
+                    return (b.porcentaje - a.porcentaje) || (b.puntos - a.puntos) ||
+                        ((typeof a.duracion === "number" ? a.duracion : sinTiempo) - (typeof b.duracion === "number" ? b.duracion : sinTiempo));
+                })
+                .slice(0, limite);
+        }
+
+        const TOP_PORTADA = 5;
+
+        function pintarRankingPortada() {
+            if (rankingDatos === null) return;
+            for (let slot = 0; slot < NOMBRES_SLOT.length; slot++) {
+                const cont = document.getElementById('rk-slot-' + slot);
+                if (!cont) continue;
+                const top = ordenarRanking(rankingDatos, slot, TOP_PORTADA);
+                if (top.length === 0) {
+                    cont.innerHTML = '<li class="rk-empty">Aún no hay puntajes. ¡Sé el primero!</li>';
+                    continue;
+                }
+                cont.innerHTML = top.map(function (r, i) {
+                    const medalla = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : (i + 1);
+                    const actual = (r.nombre === jugadorNombreActual) ? ' current-user' : '';
+                    return '<li class="rk-row' + actual + '"><span class="rk-pos">' + medalla + '</span>' +
+                        '<span class="rk-nick">' + esc(r.nombre) + '</span>' +
+                        '<span class="rk-score">' + Number(r.puntos) + ' / ' + Number(r.total) + ' pts<small>⏱ ' + formatoTiempo(r.duracion) + '</small></span></li>';
+                }).join('');
+            }
+        }
+
+        function cargarRankingPortada() {
+            db.ref('rankings').limitToLast(500).once('value', function (snapshot) {
+                const datos = [];
+                snapshot.forEach(function (child) { datos.push(child.val()); });
+                rankingDatos = datos;
+                pintarRankingPortada();
+            }, function () {
+                for (let slot = 0; slot < NOMBRES_SLOT.length; slot++) {
+                    const cont = document.getElementById('rk-slot-' + slot);
+                    if (cont) cont.innerHTML = '<li class="rk-empty">No se pudo cargar el ranking.</li>';
+                }
+            });
+        }
+
+        function irAlRanking() {
+            const sec = document.getElementById('ranking-portada');
+            if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        document.addEventListener('click', function (e) {
+            const b = e.target.closest && e.target.closest('.rk-more');
+            if (b) abrirRanking(Number(b.getAttribute('data-slot')));
+        });
+
+        function pintarTabsRanking() {
+            const cont = document.getElementById('ranking-tabs');
+            cont.innerHTML = "";
+            NOMBRES_SLOT.forEach(function (nombre, i) {
+                const b = document.createElement("button");
+                b.type = "button";
+                b.className = "rk-tab";
+                b.setAttribute("role", "tab");
+                b.setAttribute("aria-selected", String(i === slotRankingActual));
+                b.textContent = nombre;
+                b.addEventListener("click", function () {
+                    slotRankingActual = i;
+                    pintarTabsRanking();
+                    pintarRanking();
+                });
+                cont.appendChild(b);
+            });
+        }
+
+        function pintarRanking() {
+            const lista = document.getElementById('ranking-list');
+            if (rankingDatos === null) return;
+            const rankings = ordenarRanking(rankingDatos, slotRankingActual, 20);
+
+            if (rankings.length === 0) {
+                lista.innerHTML = "<p style='text-align:center; color:#6a707b; padding: 20px;'>Aún no hay puntajes en " + esc(NOMBRES_SLOT[slotRankingActual]) + ". ¡Sé el primero!</p>";
+                return;
+            }
+
+            let html = '<div class="rk-table-wrap"><table class="rk-table">' +
+                '<thead><tr>' +
+                '<th class="num">#</th><th>Jugador</th><th class="num">Puntos</th>' +
+                '<th class="num">Aciertos</th><th class="num">Tiempo</th><th>Fecha</th>' +
+                '</tr></thead><tbody>';
+            rankings.forEach((r, index) => {
+                const medalla = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+                const esJugadorActual = (r.nombre === jugadorNombreActual) ? ' class="current-user"' : '';
+                const pct = Number(r.porcentaje);
+                const clasepct = pct >= 80 ? 'alto' : pct >= 50 ? 'medio' : 'bajo';
+
+                html += '<tr' + esJugadorActual + '>' +
+                    '<td class="pos">' + medalla + '</td>' +
+                    '<td class="nick">' + esc(r.nombre) + '</td>' +
+                    '<td class="num pts">' + Number(r.puntos) + ' / ' + Number(r.total) + '</td>' +
+                    '<td class="num"><span class="rk-pct ' + clasepct + '">' + (isNaN(pct) ? '—' : pct + '%') + '</span></td>' +
+                    '<td class="num">⏱ ' + formatoTiempo(r.duracion) + '</td>' +
+                    '<td class="fecha">' + esc(r.fecha) + '</td>' +
+                    '</tr>';
+            });
+            html += '</tbody></table></div>';
+            lista.innerHTML = html;
+        }
+
+        function abrirRanking(slot) {
+            const modalRanking = document.getElementById('ranking-modal');
+            const lista = document.getElementById('ranking-list');
+            slotRankingActual = (typeof slot === "number") ? slot : 0;
+            rankingDatos = null;
+
+            pintarTabsRanking();
+            lista.innerHTML = "<p style='text-align:center; color:#6a707b; padding: 20px;'>Cargando puntuaciones globales...</p>";
+
+            if (typeof modalRanking.showModal === "function") { if (!modalRanking.open) modalRanking.showModal(); }
+            else modalRanking.setAttribute("open", "");
+
+            db.ref('rankings').limitToLast(500).once('value', (snapshot) => {
+                rankingDatos = [];
+                snapshot.forEach((child) => { rankingDatos.push(child.val()); });
+                pintarRanking();
+            }, () => {
+                lista.innerHTML = "<p style='text-align:center; color:#c0392b; padding: 20px;'>No se pudo cargar el ranking. Intenta de nuevo.</p>";
+            });
+        }
+
+        function cerrarRanking() {
+            document.getElementById('ranking-modal').close();
+        }
+
+
+        const TIEMPO = 100;
+        const TIEMPO_IMAGEN = 5;
+        const personajes = [
+            {
+                nombre: "Personajes Historicos del Deporte",
+                perfil: "personaje1.html",
+                imagen: "https://tse3.mm.bing.net/th/id/OIP.SXh278-faMswsvamuwT2CgHaDm?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
+                preguntas: [
+                    { p: "¿Quién es el único futbolista en la historia en ganar tres Copas del Mundo como jugador?", o: ["Pele", "Alexis Sanchez", "Lionel Messi", "Maradona"], c: 0, e: "Conquistó los mundiales de Suecia 1958, Chile 1962 y México 1970 con la selección de Brasil." },
+                    { p: "¿Qué futbolista protagonizó en el mismo partido los goles conocidos como La Mano de Dios y el Gol del Siglo?", o: ["Diego Armando Maradona", "Mohamed Shala", "Sadio Mané", "Todas son correctas"], c: 0, e: "el 22 de junio de 1986, en los cuartos de final del Mundial de México ante Inglaterra." },
+                    { p: "¿Qué atleta afroamericano ganó cuatro medallas de oro en los Juegos Olímpicos de Berlín 1936 frente al régimen nazi?", o: ["Jesse Owens", "Jackie Robinson", "Muhammad Ali", "Robinson Buke"], c: 0, e: "Jesse Owens ganó cuatro medallas de oro en los Juegos Olímpicos de Berlín 1936." },
+                    { p: "¿Cuántos campeonatos de la NBA ganó Michael Jordan y con qué equipo?", o: ["5", "6", "3", "Nunca"], c: 0, e: "1991, 1992, 1993, 1996, 1997 y 1998), todos jugando para los Chicago Bulls, siendo elegido MVP de las Finales en las seis ocasiones." },
+                    { p: "¿Qué jugador rompió la barrera racial en la MLB en 1947 al debutar con los Brooklyn Dodgers?", o: ["Jackie Robinson", "Jesse Cage", "El Bambino", "Roberto Clemente"], c: 0, e: "Jackie Robinson rompió la barrera racial en la MLB en 1947 al debutar con los Brooklyn Dodgers." },
+                    { p: "¿Qué país organizó el primer Mundial de fútbol en 1930?", o: ["Brasil", "Uruguay", "Argentina", "Italia"], c: 1, e: "Uruguay organizó y ganó el primer Mundial en 1930." },
+                    { p: "¿Cuántos jugadores integran inicialmente un equipo de fútbol en el campo?", o: ["9", "10", "11", "12"], c: 2, e: "Un equipo inicia con 11 jugadores en el campo." },
+                    { p: "¿En qué deporte se consigue un punto cuando la pelota toca el suelo contrario?", o: ["Voleibol", "Tenis", "Natación", "Boxeo"], c: 0, e: "En voleibol se consigue un punto cuando la pelota toca el suelo del campo contrario." }
+                ],
+                siguiente: {
+                    nombre: "Personajes Historicos del Deporte 2",
+                    perfil: "personaje1.html",
+                    imagen: "https://forkcrafted.co.uk/wp-content/uploads/2025/11/Whisk_9348a8609a6b698bd11458d10150c982dr.jpeg",
+                    preguntas: [
+                        { p: "¿En qué país nació Cristiano Ronaldo?", o: ["Portugal", "Brasil", "Argentina", "Chile"], c: 0 },
+                        { p: "¿quién es el mejor jugador de tenis del mundo?", o: ["Jannik Sinner", "Alexander Zverev", "Carlos Alcaraz", "Nicolas Mazu"], c: 0, e: "Jannik Sinner Italiano termino con 11,500 puntos en 2026." },
+                        { p: "¿que equoipo gano la MBL 2026?", o: ["Milwaukee Brewers", "Tampa Bay Rays ", "Red Sox de Boston,", "White Sox de Chicago"], c: 0, e: "Los Milwaukee Brewers son los campeones de la Serie Mundial 2026, conquistando su primer título histórico al vencer 4-1 a los Tampa Bay Rays." },
+                        { p: "¿Quien tiene la vuelta mas rapida en F1?", o: ["Lewis Hamilton ", "Lando Norris", "Max Verstappen", "Pierre Gasly"], c: 0, e: "El récord de la vuelta más rápida en la historia de la Fórmula 1 lo posee Lewis Hamilton, con 1 minuto, 18,887 segundos en Monza en 2020, a 264,362 km/h de velocidad promedio." },
+                        { p: "¿Que pais tiene más copas mundiales?", o: ["Brasil", "Alemania", "Argentina", "Italia"],  c: 0, e: "Brasil tiene más copas mundiales, con 5 títulos (1958, 1962, 1970, 1994, 2002) ." },
+                        { p: "¿Qué deporte practica Novak Djokovic?", o: ["Golf", "Tenis", "Béisbol", "Ciclismo"], c: 1, e: "Novak Djokovic es un tenista serbio." },
+                        { p: "¿Cuántos jugadores participan normalmente en el campo por equipo en baloncesto?", o: ["5", "6", "7", "10"], c: 0, e: "Cada equipo tiene cinco jugadores en el campo." },
+                        { p: "¿Qué competición reúne a las mejores selecciones nacionales de fútbol cada cuatro años?", o: ["Copa Mundial", "Copa Davis", "Tour de Francia", "NBA"], c: 0, e: "La Copa Mundial de la FIFA se disputa cada cuatro años." }
+                    ]
+                }
+            },
+            {
+                nombre: "Personaje Historico del mundo",
+                perfil: "personaje2.html",
+                imagen: "https://img.freepik.com/fotos-premium/nicolas-copernico-telescopio-antiguo_923558-8217.jpg",
+                preguntas: [
+                    { p: "¿Qué famoso polímata del Renacimiento escribía sus notas al revés (en espejo) y pintó 'La Gioconda'?", o: ["Miguel Ángel", "Leonardo da Vinci", "Rafael Sanzio", "Donatello"], c: 1 },
+                    { p: "¿Qué líder romano solía usar una corona de laurel en público principalmente para disimular su calvicie?", o: ["Nerón", "Calígula", "Julio César", "Marco Aurelio"], c: 2 },
+                    { p: "¿Qué compositor clásico compuso más de 600 obras en apenas 35 años de vida, incluyendo 'La flauta mágica'?", o: ["Ludwig van Beethoven", "Johann Sebastian Bach", "Wolfgang Amadeus Mozart", "Antonio Vivaldi"], c: 2 },
+                    { p: "¿Qué científico ganó el Premio Nobel de Física en 1921, pero no por la teoría de la relatividad, sino por el efecto fotoeléctrico?", o: ["Isaac Newton", "Nikola Tesla", "Albert Einstein", "Stephen Hawking"], c: 2 },
+                    { p: "¿Qué inventor y empresario tenía una fuerte obsesión con el número 3 y prefería hospedarse en habitaciones de hotel divisibles por esa cifra?", o: ["Thomas Alva Edison", "Nikola Tesla", "Alexander Graham Bell", "Guillermo Marconi"], c: 1 },
+                    { p: "¿Qué líder sudafricano pasó 27 años en prisión antes de convertirse en el primer presidente negro de su país elegido democráticamente?", o: ["Martin Luther King", "Mahatma Gandhi", "Nelson Mandela", "Desmond Tutu"], c: 2 },
+                    { p: "¿Qué compositor alemán se empapaba la cabeza y los brazos con agua fría antes de trabajar porque creía que estimulaba su creatividad?", o: ["Ludwig van Beethoven", "Frédéric Chopin", "Richard Wagner", "Franz Schubert"], c: 0 },
+                    { p: "¿A qué conquistador del siglo XIII se le atribuye haber unificado las tribus nómadas para fundar el Imperio Mongol?", o: ["Alejandro Magno", "Atila", "Gengis Kan", "Kublai Kan"], c: 2 }
+                    ],
+                siguiente: {
+                   nombre: "Personaje Historico del mundo 2",
+                    perfil: "personaje2.html",
+                    imagen: "https://img.freepik.com/fotos-premium/nicolas-copernico-telescopio-antiguo_923558-8217.jpg",
+                    preguntas: [
+                      { p: "¿Qué filósofo griego fue condenado a beber cicuta en el 399 a.C. acusado de corromper a la juventud de Atenas?", o: ["Platón", "Aristóteles", "Sócrates", "Epicuro"], c: 2 },
+                      { p: "¿Qué científica fue la primera persona en ganar dos Premios Nobel en distintas especialidades (Física y Química)?", o: ["Rosalind Franklin", "Marie Curie", "Lise Meitner", "Ada Lovelace"], c: 1 },
+                      { p: "¿Qué emperador francés fue desterrado primero a la isla de Elba y finalmente a la remota isla de Santa Elena?", o: ["Luis XIV", "Carlomagno", "Napoleón Bonaparte", "Luis XVI"], c: 2 },
+                      { p: "¿Qué reina del antiguo Egipto fue la última gobernante activa de la dinastía ptolemaica y hablaba varios idiomas, incluido el egipcio?", o: ["Nefertiti", "Hatshepsut", "Cleopatra VII", "Arsinoe II"], c: 2 },
+                      { p: "¿Qué navegante portugués lideró la expedición que logró la primera circunnavegación de la Tierra, aunque murió en Filipinas antes de completarla?", o: ["Vasco da Gama", "Fernando de Magallanes", "Bartolomé Díaz", "Enrique el Navegante"], c: 1 },
+                      { p: "¿Qué matemático e informático británico fue clave para descifrar los códigos de la máquina Enigma durante la Segunda Guerra Mundial?", o: ["Alan Turing", "Charles Babbage", "John von Neumann", "Claude Shannon"], c: 0 },
+                      { p: "¿Qué emperador chino ordenó construir el famoso Ejército de Terracota para custodiar su tumba?", o: ["Kublai Kan", "Qin Shi Huang", "Sun Tzu", "Kangxi"], c: 1 },
+                      { p: "¿Qué matemática inglesa del siglo XIX escribió el primer algoritmo destinado a ser procesado por una máquina, considerada la primera programadora?", o: ["Hypatia de Alejandría", "Ada Lovelace", "Emmy Noether", "Grace Hopper"], c: 1 }
+                ],
+                }
+            },
+            {
+                nombre: "¿Series, peliculas y personajes de ficción?",
+                perfil: "personaje3.html",
+                imagen: "Serie.png",
+                preguntas: [
+                    { p: "¿Quien fue el creador de Breaking Bad?", o: ["Vince Gilligan", "Jeasy Pigman", "Linwood Boomer", "Anuel AA"], c: 0 },
+                    { p: "En la serie 'Breaking Bad', ¿qué pseudónimo adopta Walter White para operar dentro del mundo del narcotráfico?", o: ["Heisenberg", "Fring", "Schaders", "Jeasy Pigman"], c: 0 },
+                    { p: "En el Universo Cinematográfico de Marvel (UCM), ¿qué objeto utiliza el Doctor Strange para manipular el flujo del tiempo?", o: ["El ojo de Agamotto", "El Éter", "Gema del tiempo", "El orbe"], c: 0 },
+                    { p: "En la saga 'Harry Potter', ¿cuál es la forma corpórea que adopta el encantamiento Patronus de Severus Snape?", o: ["Una cierva", "Un ciervo", "Un Ave Fenix", "Una Nutria"], c: 0 },
+                    { p: "¿Quién es el actor que interpreta a Tony Stark / Iron Man en las películas del Universo Cinematográfico de Marvel?", o: ["Robert Downey Jr.", "Chris Evans", "Chris Hemsworth", "Mark Ruffalo"], c: 0 },
+                    { p: "¿Cuál es el nombre del protagonista de la saga Matrix?", o: ["Neo", "Trinity", "Morfeo", "Smith"], c: 0 },
+                    { p: "¿Qué casa recibe a Harry Potter en Hogwarts?", o: ["Hufflepuff", "Gryffindor", "Slytherin", "Ravenclaw"], c: 1 },
+                    { p: "¿Quién interpreta a Capitán América en el UCM?", o: ["Chris Evans", "Tom Holland", "Chris Pratt", "Jeremy Renner"], c: 0 },
+                    { p: "¿Cómo se llama el juguete vaquero de Toy Story?", o: ["Woody", "Buzz", "Andy", "Slinky"], c: 0 }
+                ],
+                siguiente: {
+                    nombre: "Más preguntas de series, peliculas y personajes de ficción",
+                    perfil: "personaje3.html",
+                    imagen: "harrypotter-piratas.png",
+                    preguntas: [
+                        { p: "¿Que tiene cicatriz tiene en frente Harry poter?", o: ["Un rayo", "Un corte", "Un Ciervo", "Carabela"], c: 0 },
+                        { p: "¿quien es el fiel amigo de el Capitan Jack Sparrow?", o: ["Joshamee Gibbs", "el capitan Barbosa", "Will Turner", "Jack el mono"], c: 0 },
+                        { p: "¿En qué país se originó el cine?", o: ["Francia", "Inglaterra", "Canada", "Japon"], c: 0 },
+                        { p: "¿Cual era el nombre del barco del capitan Jack Sparrow?", o: ["El perla Negra", "El Holandes Errante", "La Venganza de la Reina Ana", "Huascar"], c: 0 },
+                        { p: "¿De qué madera es la primera varita de Harry?", o: ["Acebo con una pluma fenix", "Madera de abedul", "Madera de roble", "PLuma de ave fenix"], c: 0 },
+                        { p: "¿Cuál es el nombre del protagonista de la saga Matrix?", o: ["Neo", "Trinity", "Morfeo", "Smith"], c: 0 },
+                        { p: "¿Cómo se llama el capitán de la tripulación del Perla Negra?", o: ["Jack Sparrow", "Barbossa", "Will Turner", "Davy Jones"], c: 0 },
+                        { p: "¿Qué hechizo pertenece a Lord Voldemort?", o: ["Avada Kedavra", "Expelliarmus", "Alohomora", "Lumos"], c: 0 },
+                        { p: "¿Qué nombre recibe el martillo de Thor?", o: ["Mjolnir", "Stormbreaker", "Gungnir", "Hela"], c: 0 },
+                        { p: "¿Qué personaje vive en la ciudad de Springfield?", o: ["Homer Simpson", "Peter Griffin", "Stan Marsh", "Eric Cartman"], c: 0 }
+                    ]
+                }
+            },
+            {
+                nombre: "Cultura general al azar",
+                perfil: "personaje4.html",
+                imagen: "https://cultures.fr/file/img/developper-sa-culture-generale-1024x585.webp",
+                preguntas: [
+                    { p: "¿Cuál es el planeta más grande del sistema solar?", o: ["Júpiter", "Saturno", "Neptuno", "Marte"], c: 0 },
+                    { p: "¿Cuál es el océano más grande del mundo?", o: ["Pacífico", "Atlántico", "Índico", "Ártico"], c: 0 },
+                    { p: "¿En qué año llegó el ser humano a la Luna por primera vez?", o: ["1969", "1959", "1975", "1981"], c: 0 },
+                    { p: "¿Cuál es el mamífero más grande del planeta?", o: ["La ballena azul", "El elefante africano", "La jirafa", "El tiburón ballena"], c: 0 },
+                    { p: "¿Cuál es el país más grande del mundo por superficie?", o: ["Canadá", "Rusia", "China", "Estados Unidos"], c: 1 },
+                    { p: "¿Qué invento fue creado por Alexander Graham Bell?", o: ["El teléfono", "La bombilla", "La radio", "El computador"], c: 0 },
+                    { p: "¿Cuál es el río más largo del mundo?", o: ["Nilo", "Amazonas", "Mississippi", "Yangtsé"], c: 1 },
+                    { p: "¿En qué continente está Egipto?", o: ["Asia", "Oceanía", "África", "Europa"], c: 2 },
+                    { p: "¿Qué elemento químico tiene el símbolo \"Au\"?", o: ["Oro", "Plata", "Aluminio", "Argón"], c: 0 }
+                ],
+                siguiente: {
+                    nombre: "Datos curiosos al azar",
+                    perfil: "personaje4.html",
+                    imagen: "https://cultures.fr/file/img/developper-sa-culture-generale-1024x585.webp",
+                    preguntas: [
+                        { p: "¿Cuántos jugadores de un mismo equipo están en la cancha a la vez en un partido de fútbol?", o: ["11", "9", "10", "12"], c: 0 },
+                        { p: "¿Cuál es la capital de Japón?", o: ["Tokio", "Kioto", "Osaka", "Seúl"], c: 0 },
+                        { p: "¿Quién pintó la Mona Lisa?", o: ["Leonardo da Vinci", "Miguel Ángel", "Rafael", "Vincent van Gogh"], c: 0 },
+                        { p: "¿Cuántos corazones tiene un pulpo?", o: ["Uno", "Dos", "Tres", "Cuatro"], c: 2 },
+                        { p: "¿Qué animal tiene huellas dactilares muy similares a las humanas?", o: ["Chimpancé", "Koala", "Delfín", "Perezoso"], c: 1 },
+                        { p: "¿Cuál es el metal líquido a temperatura ambiente?", o: ["Mercurio", "Hierro", "Plomo", "Níquel"], c: 0 },
+                        { p: "¿Qué planeta tiene los días más cortos del sistema solar?", o: ["Júpiter", "Marte", "Venus", "Neptuno"], c: 0 },  
+                        { p: "¿Cuál es el hueso más largo del cuerpo humano?", o: ["El fémur", "El húmero", "La tibia", "El peroné"], c: 0 },
+                        { p: "¿Qué lenguaje se usa principalmente para dar estructura a las páginas web?", o: ["HTML", "Python", "SQL", "C++"], c: 0 }
+                    ]
+                }
+            }
+        ];
+
+        // ---- Modo CONTRA RELOJ: empiezas con poco tiempo y cada acierto suma segundos ----
+        const RELOJ_INICIO = 15;   // segundos al comenzar
+        const RELOJ_PENAL = 5;     // segundos que resta cada respuesta incorrecta
+        const RELOJ_BONUS = 10;    // segundos que suma cada respuesta correcta
+        const RELOJ_BARRA = 60;    // segundos que representa la barra llena
+
+        personajes.push({
+            nombre: "Contra reloj",
+            modo: "reloj",
+            perfil: "personaje4.html",
+            imagen: "https://tse1.mm.bing.net/th/id/OIP.3SFUlkk178VpO5tekZ9FZAHaEK?r=0&rs=1&pid=ImgDetMain&o=7&rm=3",
+            preguntas: [
+                { p: "¿Cuál es el planeta más cercano al Sol?", o: ["Mercurio", "Venus", "Marte", "Tierra"], c: 0 },
+                { p: "¿Cuál es la capital de Chile?", o: ["Valparaíso", "Santiago", "Concepción", "Antofagasta"], c: 1 },
+                { p: "¿Cuál es el animal terrestre más rápido?", o: ["León", "Caballo", "Guepardo", "Antílope"], c: 2 },
+                { p: "¿Cuántos lados tiene un hexágono?", o: ["5", "6", "7", "8"], c: 1 },
+                { p: "¿Quién escribió \"Don Quijote de la Mancha\"?", o: ["Miguel de Cervantes", "Lope de Vega", "Gabriel García Márquez", "Pablo Neruda"], c: 0 },
+                { p: "¿Cuál es el gas más abundante en la atmósfera terrestre?", o: ["Oxígeno", "Nitrógeno", "Dióxido de carbono", "Hidrógeno"], c: 1 },
+                { p: "¿En qué año comenzó la Primera Guerra Mundial?", o: ["1914", "1918", "1939", "1905"], c: 0 },
+                { p: "¿Cuál es el idioma con más hablantes nativos del mundo?", o: ["Inglés", "Español", "Chino mandarín", "Hindi"], c: 2 },
+                { p: "¿Cuál es el hueso más pequeño del cuerpo humano?", o: ["Yunque", "Martillo", "Estribo", "Falange"], c: 2 },
+                { p: "¿Qué país tiene forma de bota?", o: ["Grecia", "Italia", "España", "Portugal"], c: 1 },
+                { p: "¿Cuál es la fórmula química del agua?", o: ["CO2", "H2O", "O2", "NaCl"], c: 1 },
+                { p: "¿Cuántos jugadores de un equipo de voleibol están en la cancha?", o: ["5", "6", "7", "8"], c: 1 },
+                { p: "¿Quién fue el primer hombre en pisar la Luna?", o: ["Buzz Aldrin", "Yuri Gagarin", "Neil Armstrong", "Michael Collins"], c: 2 },
+                { p: "¿En qué país se encuentra el desierto de Atacama?", o: ["Perú", "Chile", "Bolivia", "Argentina"], c: 1 },
+                { p: "¿Cuál es la montaña más alta del mundo sobre el nivel del mar?", o: ["K2", "Aconcagua", "Everest", "Kilimanjaro"], c: 2 },
+                { p: "¿Cuántos colores tiene el arcoíris?", o: ["5", "6", "7", "8"], c: 2 },
+                { p: "¿Qué órgano del cuerpo bombea la sangre?", o: ["Pulmón", "Hígado", "Corazón", "Riñón"], c: 2 },
+                { p: "¿Cuál es la capital de Argentina?", o: ["Buenos Aires", "Córdoba", "Rosario", "Mendoza"], c: 0 },
+                { p: "¿Quién pintó \"La noche estrellada\"?", o: ["Claude Monet", "Vincent van Gogh", "Pablo Picasso", "Salvador Dalí"], c: 1 },
+                { p: "¿Qué elemento químico tiene el símbolo \"Fe\"?", o: ["Flúor", "Fósforo", "Hierro", "Francio"], c: 2 },
+                { p: "¿Qué selección ganó el Mundial de fútbol de 2022?", o: ["Francia", "Argentina", "Brasil", "Croacia"], c: 1 },
+                { p: "¿Cuántos huesos tiene aproximadamente un adulto?", o: ["106", "206", "306", "406"], c: 1 },
+                { p: "¿Qué océano baña la costa de Chile?", o: ["Atlántico", "Índico", "Pacífico", "Ártico"], c: 2 },
+                { p: "¿Quién formuló la ley de la gravitación universal?", o: ["Galileo Galilei", "Isaac Newton", "Nikola Tesla", "Johannes Kepler"], c: 1 },
+                { p: "¿Cuál es la moneda de Japón?", o: ["Won", "Yuan", "Yen", "Baht"], c: 2 },
+                { p: "¿Qué planeta es conocido como el planeta rojo?", o: ["Marte", "Júpiter", "Venus", "Saturno"], c: 0 },
+                { p: "¿Cuántas cuerdas tiene una guitarra estándar?", o: ["4", "5", "6", "7"], c: 2 },
+                { p: "¿Quién propuso la teoría de la relatividad?", o: ["Niels Bohr", "Albert Einstein", "Max Planck", "Marie Curie"], c: 1 },
+                { p: "¿En qué ciudad se encuentra la Torre Eiffel?", o: ["Roma", "Londres", "Madrid", "París"], c: 3 },
+                { p: "¿Qué ave no vuela y vive en la Antártida?", o: ["Albatros", "Pingüino", "Gaviota", "Cóndor"], c: 1 },
+                { p: "¿Qué río atraviesa la ciudad de Londres?", o: ["Sena", "Danubio", "Támesis", "Rin"], c: 2 },
+                { p: "¿Quién fue el primer presidente de Estados Unidos?", o: ["Abraham Lincoln", "George Washington", "Thomas Jefferson", "John Adams"], c: 1 },
+                { p: "¿Qué vitamina produce el cuerpo con la luz del sol?", o: ["Vitamina A", "Vitamina C", "Vitamina D", "Vitamina K"], c: 2 },
+                { p: "¿Cuántos aros tiene la bandera olímpica?", o: ["4", "5", "6", "7"], c: 1 },
+                { p: "¿Qué instrumento musical tiene teclas blancas y negras?", o: ["Violín", "Flauta", "Piano", "Trompeta"], c: 2 },
+                { p: "¿Qué país es conocido como la tierra del sol naciente?", o: ["China", "Corea del Sur", "Tailandia", "Japón"], c: 3 },
+                { p: "¿Cuál es la capital de Perú?", o: ["Cusco", "Lima", "Arequipa", "Quito"], c: 1 },
+                { p: "¿Cuál es el elemento más abundante del universo?", o: ["Oxígeno", "Helio", "Hidrógeno", "Carbono"], c: 2 },
+                { p: "¿Cuántos puntos vale un triple en baloncesto?", o: ["2", "3", "4", "1"], c: 1 },
+                { p: "¿Cuál es el océano más grande del mundo?", o: ["Atlántico", "Índico", "Pacífico", "Ártico"], c: 2 }
+            ]
+        });
+
+        function mostrarReglas(indice) {
+            detener();
+            const per = personajes[indice];
+            modal.classList.add("is-intro");
+            document.getElementById("qa-eyebrow").textContent = "TRIVIA " + String(indice + 1).padStart(2, "0") + " · CONTRA RELOJ";
+            document.getElementById("qa-title").textContent = per.nombre;
+            lista.textContent = "";
+            const caja = el("div", "qz-result");
+            caja.append(el("p", "qz-score", "⏱ " + RELOJ_INICIO + " s"));
+            caja.append(el("p", "qz-msg", "Empiezas con " + RELOJ_INICIO + " segundos. Cada respuesta correcta suma " + RELOJ_BONUS + " segundos y cada error te resta " + RELOJ_PENAL + ". La partida termina cuando el reloj llega a 0."));
+            caja.append(el("p", "qz-msg", "El ranking se ordena por cantidad de aciertos."));
+            const b = el("button", "qz-btn", "¡Comenzar!");
+            b.type = "button";
+            b.addEventListener("click", function () { iniciar(indice, per, 0); });
+            caja.append(b);
+            lista.append(caja);
+            b.focus();
+        }
+
+        const modal = document.getElementById("qa-modal");
+        const lista = document.getElementById("qa-list");
+        const timerEl = document.getElementById("qz-timer");
+        const fillEl = document.getElementById("qz-fill");
+        const progEl = document.getElementById("qz-progress");
+        let juego_estado = null;
+        let introTimeout = null;
+        let introReloj = null;
+        let avanceTimeout = null;
+
+        function el(tag, clase, texto) {
+            const n = document.createElement(tag);
+            if (clase) n.className = clase;
+            if (texto !== undefined) n.textContent = texto;
+            return n;
+        }
+
+        function mezclar(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                const t = a[i]; a[i] = a[j]; a[j] = t;
+            }
+            return a;
+        }
+
+        function pintarTiempo() {
+            const m = Math.floor(juego_estado.restante / 60);
+            const s = String(juego_estado.restante % 60).padStart(2, "0");
+            timerEl.textContent = m + ":" + s;
+            const bajo = juego_estado.restante <= juego_estado.umbral;
+            timerEl.classList.toggle("low", bajo);
+            fillEl.classList.toggle("low", bajo);
+            fillEl.style.width = Math.min(100, juego_estado.restante / juego_estado.maxTiempo * 100) + "%";
+        }
+
+        function iniciar(indice, per, nivel) {
+            detener();
+            modal.classList.remove("is-intro");
+            per = per || personajes[indice];
+            nivel = nivel || 0;
+            const esReloj = per.modo === "reloj";
+            juego_estado = {
+                indice: indice, nivel: nivel, per: per, q: 0, puntos: 0, respondidas: 0,
+                preguntas: esReloj ? mezclar(per.preguntas) : per.preguntas,
+                respondida: false, terminado: false,
+                restante: esReloj ? RELOJ_INICIO : TIEMPO,
+                maxTiempo: esReloj ? RELOJ_BARRA : TIEMPO,
+                umbral: esReloj ? 10 : 20,
+                inicio: Date.now(), reloj: null
+            };
+            document.getElementById("qa-eyebrow").textContent = "TRIVIA " + String(indice + 1).padStart(2, "0") + (nivel > 0 ? " · PERSONAJE NUEVO" : "");
+            document.getElementById("qa-title").textContent = per.nombre;
+            document.getElementById("qa-profile").href = per.perfil;
+            fillEl.style.transition = "none";
+            pintarTiempo();
+            void fillEl.offsetWidth;
+            fillEl.style.transition = "";
+            juego_estado.reloj = setInterval(function () {
+                juego_estado.restante--;
+                pintarTiempo();
+                if (juego_estado.restante <= 0) terminar(true);
+            }, 1000);
+            pregunta();
+        }
+
+        function detener() {
+            if (juego_estado && juego_estado.reloj) clearInterval(juego_estado.reloj);
+            if (introTimeout) clearTimeout(introTimeout);
+            if (introReloj) clearInterval(introReloj);
+            introReloj = null;
+            if (avanceTimeout) clearTimeout(avanceTimeout);
+            introTimeout = null;
+            avanceTimeout = null;
+        }
+
+        function mostrarIntro(indice, per, nivel) {
+            detener();
+            per = per || personajes[indice];
+            nivel = nivel || 0;
+            const mensaje = el("p", "qa-intro-message", (nivel > 0 ? "¡Apareció un personaje nuevo! " : "") + "La trivia comenzará cuando el contador llegue a 0." + (per.modo === "reloj" ? " Empiezas con " + RELOJ_INICIO + " s: +" + RELOJ_BONUS + " s por acierto y -" + RELOJ_PENAL + " s por error." : ""));
+            const imagen = el("img", "qa-intro-image");
+            imagen.alt = per.nombre;
+            const envoltura = el("div", "qa-intro-wrap");
+            const contador = el("span", "qa-intro-count", String(TIEMPO_IMAGEN));
+            contador.setAttribute("aria-hidden", "true");
+            const barra = el("div", "qa-intro-bar");
+            const relleno = el("span");
+            barra.append(relleno);
+            imagen.addEventListener("load", function () {
+                if (!modal.classList.contains("is-intro") || !lista.contains(imagen)) return;
+                let restante = TIEMPO_IMAGEN;
+                contador.textContent = restante;
+                relleno.style.transition = "none";
+                relleno.style.width = "100%";
+                void relleno.offsetWidth;
+                relleno.style.transition = "width " + TIEMPO_IMAGEN + "s linear";
+                relleno.style.width = "0%";
+                introReloj = setInterval(function () {
+                    restante--;
+                    contador.textContent = Math.max(restante, 0);
+                    contador.classList.toggle("low", restante <= 3);
+                    if (restante <= 0) {
+                        clearInterval(introReloj);
+                        introReloj = null;
+                        iniciar(indice, per, nivel);
+                    }
+                }, 1000);
+            }, { once: true });
+            imagen.addEventListener("error", function () {
+                if (!modal.classList.contains("is-intro") || !lista.contains(imagen)) return;
+                mensaje.textContent = "No se pudo cargar la imagen. Puedes iniciar la trivia manualmente.";
+                contador.remove();
+                barra.remove();
+                const boton = el("button", "qz-btn", "Iniciar trivia");
+                boton.type = "button";
+                boton.addEventListener("click", function () { iniciar(indice, per, nivel); });
+                lista.append(boton);
+            }, { once: true });
+            imagen.src = per.imagen;
+            modal.classList.add("is-intro");
+            document.getElementById("qa-eyebrow").textContent = "TRIVIA " + String(indice + 1).padStart(2, "0") + (nivel > 0 ? " · PERSONAJE NUEVO" : "");
+            document.getElementById("qa-title").textContent = per.nombre;
+            lista.textContent = "";
+            envoltura.append(imagen, contador);
+            lista.append(envoltura, barra, mensaje);
+        }
+
+        function pregunta() {
+            const per = juego_estado.per;
+            const q = juego_estado.preguntas[juego_estado.q];
+            juego_estado.respondida = false;
+            progEl.textContent = per.modo === "reloj"
+                ? "ACIERTOS " + juego_estado.puntos + " · PREGUNTA " + (juego_estado.q + 1)
+                : "PREGUNTA " + (juego_estado.q + 1) + " / " + juego_estado.preguntas.length;
+            lista.textContent = "";
+            lista.append(el("h3", "qz-question", q.p));
+            const caja = el("div", "qz-options");
+            mezclar(q.o.map(function (t, i) { return { t: t, ok: i === q.c }; })).forEach(function (op) {
+                const b = el("button", "qz-option", op.t);
+                b.type = "button";
+                b.dataset.ok = op.ok ? "1" : "0";
+                b.addEventListener("click", function () { responder(b, q); });
+                caja.append(b);
+            });
+            lista.append(caja);
+            const area = el("div", "qz-after");
+            lista.append(area);
+        }
+
+        function responder(btn, q) {
+            if (!juego_estado || juego_estado.respondida || juego_estado.terminado) return;
+            juego_estado.respondida = true;
+            const acierto = btn.dataset.ok === "1";
+            const esReloj = juego_estado.per.modo === "reloj";
+            juego_estado.respondidas++;
+            if (acierto) juego_estado.puntos++;
+            if (esReloj && acierto) {
+                juego_estado.restante += RELOJ_BONUS;
+                pintarTiempo();
+                timerEl.classList.remove("bonus");
+                void timerEl.offsetWidth;
+                timerEl.classList.add("bonus");
+            } else if (esReloj && !acierto) {
+                juego_estado.restante = Math.max(0, juego_estado.restante - RELOJ_PENAL);
+                pintarTiempo();
+                timerEl.classList.remove("penal");
+                void timerEl.offsetWidth;
+                timerEl.classList.add("penal");
+            }
+            lista.querySelectorAll(".qz-option").forEach(function (b) {
+                b.disabled = true;
+                if (b.dataset.ok === "1") b.classList.add("correct");
+                else if (b === btn) b.classList.add("wrong");
+                else b.classList.add("dim");
+            });
+            const area = lista.querySelector(".qz-after");
+            area.append(el("p", "qz-feedback " + (acierto ? "ok" : "bad"), (acierto ? "¡Correcto! " + (esReloj ? "+" + RELOJ_BONUS + " s. " : "") : "Incorrecto. " + (esReloj ? "-" + RELOJ_PENAL + " s. " : "")) + (q.e || "")));
+            const ultima = juego_estado.q >= juego_estado.preguntas.length - 1;
+            avanceTimeout = setTimeout(function () {
+                avanceTimeout = null;
+                if (esReloj && juego_estado.restante <= 0) terminar(true);
+                else if (ultima) terminar(false);
+                else {
+                    juego_estado.q++;
+                    pregunta();
+                    lista.querySelector(".qz-option").focus();
+                }
+            }, esReloj ? 600 : 1200);
+        }
+
+        function terminar(sinTiempo) {
+            if (juego_estado.terminado) return;
+            juego_estado.terminado = true;
+            detener();
+            const esReloj = juego_estado.per.modo === "reloj";
+            const total = esReloj ? juego_estado.respondidas : juego_estado.preguntas.length;
+
+            const duracion = esReloj
+                ? Math.max(0, Math.round((Date.now() - juego_estado.inicio) / 1000))
+                : Math.min(TIEMPO, Math.max(0, TIEMPO - juego_estado.restante));
+            Promise.resolve(guardarEnRanking(juego_estado.per.nombre, juego_estado.puntos, total, juego_estado.indice, duracion))
+                .then(cargarRankingPortada, cargarRankingPortada);
+
+            lista.textContent = "";
+            progEl.textContent = "RESULTADO";
+            const caja = el("div", "qz-result");
+            caja.append(el("p", "qz-score", juego_estado.puntos + " / " + total));
+            if (esReloj) {
+                caja.append(el("p", "qz-msg", (sinTiempo ? "¡Se acabó el tiempo! " : "¡Increíble, agotaste todas las preguntas! ") + "Lograste " + juego_estado.puntos + " aciertos de " + total + " respondidas."));
+            } else {
+                caja.append(el("p", "qz-msg", sinTiempo ? "¡Se acabó el tiempo! Las preguntas sin responder cuentan como incorrectas." : (juego_estado.puntos === total ? "¡Perfecto! Respondiste todo bien." : "¡Buen intento! Puedes volver a jugar para mejorar.")));
+            }
+            caja.append(el("p", "qz-msg", "Tiempo: " + formatoTiempo(duracion)));
+
+            const btnRanking = el("button", "qz-btn", "Ver Ranking 🏆");
+            btnRanking.type = "button";
+            btnRanking.style.marginTop = "10px";
+            btnRanking.style.background = "#2b2f36";
+            btnRanking.style.color = "#ffffff";
+            btnRanking.addEventListener("click", function () {
+                modal.close();
+                irAlRanking();
+            });
+
+            const otra = el("button", "qz-btn", "Jugar de nuevo");
+            otra.type = "button";
+            otra.style.marginTop = "10px";
+            const idx = juego_estado.indice;
+            const perActual = juego_estado.per;
+            const nivelActual = juego_estado.nivel;
+            otra.addEventListener("click", function () { iniciar(idx, perActual, nivelActual); });
+
+            const sig = perActual.siguiente;
+            if (sig) {
+                caja.append(el("p", "qz-msg", "¡Apareció un personaje Salvaje, responde!!: " + sig.nombre + "! La trivia comenzará automáticamente en 10 segundos."));
+                const btnSig = el("button", "qz-btn", "Iniciar ahora ➜");
+                btnSig.type = "button";
+                btnSig.style.background = "#c8902a";
+                btnSig.addEventListener("click", function () {
+                    if (sig.imagen) mostrarIntro(idx, sig, nivelActual + 1);
+                    else iniciar(idx, sig, nivelActual + 1);
+                });
+                caja.append(btnSig);
+                introTimeout = setTimeout(function () {
+                    if (sig.imagen) mostrarIntro(idx, sig, nivelActual + 1);
+                    else iniciar(idx, sig, nivelActual + 1);
+                }, 3000);
+            }
+
+            caja.append(btnRanking);
+            caja.append(otra);
+            lista.append(caja);
+            (caja.querySelector(".qz-btn") || otra).focus();
+        }
+
+        function abrir(indice) {
+            if (typeof modal.showModal === "function") modal.showModal();
+            else modal.setAttribute("open", "");
+            document.body.style.overflow = "hidden";
+            if (personajes[indice].imagen) mostrarIntro(indice);
+            else if (personajes[indice].modo === "reloj") mostrarReglas(indice);
+            else iniciar(indice);
+        }
+
+        document.querySelectorAll("[data-character]").forEach(function (btn) {
+            btn.addEventListener("click", function () { abrir(Number(btn.dataset.character)); });
+        });
+        modal.addEventListener("close", function () {
+            detener();
+            document.body.style.overflow = "";
+        });
+        document.getElementById("ranking-modal").addEventListener("close", function () {
+            document.body.style.overflow = "";
+        });
+        document.getElementById("qa-close").addEventListener("click", function () { modal.close(); });
+
+        (function restaurarSesion() {
+            let guardado = null;
+            try { guardado = JSON.parse(localStorage.getItem(CLAVE_SESION)); } catch (e) {}
+            if (guardado && guardado.usuario) mostrarJuego(guardado.nick || guardado.usuario);
+        })();
+        // ---- Pantalla de carga: la intro empieza junto con la música ----
+        (function () {
+            const audio = document.getElementById("musica");
+            const pre = document.getElementById("preloader");
+            const gate = document.getElementById("pre-gate");
+            const reducido = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            const CLAVE = "arenaVuelveDeCuestionario";
+            const esCorto = document.documentElement.classList.contains("pre-corto");
+            const T_COMPLETA = 7000;  // ms de la intro con TRIVIA
+            const T_CORTA = 2800;     // ms de la intro con solo el logo
+            const EVENTOS = ["click", "keydown", "mousedown", "pointerup", "touchend"];
+
+            function leerMarca() { try { return sessionStorage.getItem(CLAVE) === "1"; } catch (e) { return false; } }
+            function ponerMarca() { try { sessionStorage.setItem(CLAVE, "1"); } catch (e) {} }
+            function borrarMarca() { try { sessionStorage.removeItem(CLAVE); } catch (e) {} }
+
+            function cerrar(el) {
+                if (!el || el.dataset.cerrada) return;
+                el.dataset.cerrada = "1";
+                el.classList.add("oculto");
+                document.body.style.overflow = "";
+                setTimeout(function () { el.remove(); }, 900);
+            }
+
+            // Ejecuta fn con la primera interacción del usuario (el navegador exige una para dar sonido)
+            function alPrimerToque(fn) {
+                function disparar() {
+                    EVENTOS.forEach(function (ev) { window.removeEventListener(ev, disparar); });
+                    fn();
+                }
+                EVENTOS.forEach(function (ev) { window.addEventListener(ev, disparar); });
+            }
+
+            document.body.style.overflow = "hidden";
+            borrarMarca();
+            audio.volume = 0.08;   // volumen bajo (0 a 1)
+
+            const btnMusica = document.getElementById("btn-musica");
+            let pausadaPorUsuario = false;
+
+            function pintarBotonMusica() {
+                const suena = !audio.paused && !pausadaPorUsuario;
+                btnMusica.textContent = suena ? "🔊" : "🔇";
+                btnMusica.setAttribute("aria-pressed", String(!suena));
+                btnMusica.setAttribute("aria-label", suena ? "Pausar música" : "Reanudar música");
+                btnMusica.title = suena ? "Pausar música" : "Reanudar música";
+            }
+
+            btnMusica.addEventListener("click", function (e) {
+                e.stopPropagation();
+                if (audio.paused || pausadaPorUsuario) {
+                    pausadaPorUsuario = false;
+                    audio.play().catch(function () {});
+                } else {
+                    pausadaPorUsuario = true;
+                    audio.pause();
+                }
+                pintarBotonMusica();
+            });
+            audio.addEventListener("play", pintarBotonMusica);
+            audio.addEventListener("pause", pintarBotonMusica);
+
+            let iniciada = false;
+
+            // La animación arranca sola, sin esperar ningún clic
+            function iniciarIntro() {
+                if (iniciada) return;
+                iniciada = true;
+                gate.hidden = true;
+                pre.classList.add("pre-activo");
+                setTimeout(function () { cerrar(pre); }, reducido ? 900 : (esCorto ? T_CORTA : T_COMPLETA));
+            }
+
+            // Si el navegador bloquea el audio, la música entra con la primera interacción (sin pantalla extra)
+            function musicaAlPrimerToque() {
+                alPrimerToque(function () {
+                    if (!pausadaPorUsuario) audio.play().catch(function () {});
+                });
+            }
+
+            iniciarIntro();
+            const intento = audio.play();
+            if (intento && intento.catch) intento.catch(musicaAlPrimerToque);
+            pintarBotonMusica();
+
+            // Si el navegador restaura la página sin recargarla (botón "atrás"), se repite el logo
+            window.addEventListener("pageshow", function (e) {
+                if (!e.persisted || !leerMarca()) return;
+                borrarMarca();
+                const viejo = document.getElementById("preloader");
+                if (viejo) viejo.remove();
+                const nuevo = document.createElement("div");
+                nuevo.id = "preloader";
+                nuevo.className = "pre-activo";
+                nuevo.setAttribute("role", "status");
+                nuevo.setAttribute("aria-label", "Cargando");
+                const img = document.createElement("img");
+                img.className = "pre-logo";
+                img.src = "LogoSinFondo.png";
+                img.alt = "Logotipo Explocion Arena";
+                nuevo.appendChild(img);
+                document.documentElement.classList.add("pre-corto");
+                document.body.appendChild(nuevo);
+                document.body.style.overflow = "hidden";
+                if (!pausadaPorUsuario) audio.play().catch(function () {
+                    alPrimerToque(function () { if (!pausadaPorUsuario) audio.play().catch(function () {}); });
+                });
+                setTimeout(function () { cerrar(nuevo); }, reducido ? 900 : T_CORTA);
+            });
+        })();
+    </script>
+
+    <!-- Guía interactiva: Driver.js (versión fija) y su configuración editable en tour.js -->
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.3.1/dist/driver.js.iife.js"></script>
+    <script src="tour.js"></script>
+</body>
+</html>

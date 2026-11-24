@@ -1,0 +1,95 @@
+/* Estilos de la guía (Driver.js). Fondo blanco para que la flecha del globo coincida. */
+.driver-popover.tour-arena {
+    max-width: min(340px, calc(100vw - 32px));
+    padding: 18px;
+    border-radius: 14px;
+    color: #1b1e23;
+    font-family: "DM Sans", sans-serif;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+    border-top: 4px solid #c8902a;
+}
+
+.tour-arena .driver-popover-title {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1b1e23;
+}
+
+.tour-arena .driver-popover-description {
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #454a52;
+}
+
+.tour-arena .driver-popover-progress-text {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6a707b;
+}
+
+.tour-arena .driver-popover-footer button {
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 10px;
+    border: 1.5px solid rgba(27, 30, 35, 0.22);
+    background: #ffffff;
+    color: #1b1e23;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    text-shadow: none;
+    cursor: pointer;
+}
+
+.tour-arena .driver-popover-footer button:hover {
+    border-color: #c8902a;
+    background: #f4f4f5;
+}
+
+.tour-arena .driver-popover-footer .driver-popover-next-btn {
+    background: #2b2f36;
+    border-color: #2b2f36;
+    color: #ffffff;
+}
+
+.tour-arena .driver-popover-footer .driver-popover-next-btn:hover {
+    background: #454b56;
+    border-color: #454b56;
+}
+
+.tour-arena .driver-popover-close-btn {
+    cursor: pointer;
+    color: #6a707b;
+}
+
+/* Botón "Ver guía" dentro de la página */
+.tour-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    margin-top: 18px;
+    padding: 0 18px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 180ms ease, border-color 180ms ease;
+}
+
+.tour-btn:hover {
+    background: rgba(255, 255, 255, 0.26);
+    border-color: #ffffff;
+}
+
+.tour-btn:focus-visible {
+    outline: 2px solid #c8902a;
+    outline-offset: 3px;
+}

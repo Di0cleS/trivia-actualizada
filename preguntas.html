@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cuestionario</title>
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img class="header-logo" src="logo.png" alt="Logotipo Explocion Arena" width="72" height="72" />
+      <h1>Cuestionario de la página web</h1>
+      <p>Cuéntanos qué te parece la página. Tu opinión nos ayuda a mejorar.</p>
+    </div>
+
+    <div class="form-box">
+      <form id="formCuestionario">
+        <div class="field full">
+          <label for="nombre">Nombre completo</label>
+          <input id="nombre" name="nombre" type="text" placeholder="Escribe Nick" required>
+        </div>
+
+        <div class="field full">
+          <label for="mensaje">¿Qué opinas sobre la página web?</label>
+          <textarea id="mensaje" name="mensaje" placeholder="Escribe tu comentario..."></textarea>
+        </div>
+
+        <div class="field full">
+          <label for="sugerencia">¿Qué otra pregunta deberían tener o quién faltó?</label>
+          <textarea id="sugerencia" name="sugerencia" placeholder="Escribe tu sugerencia..."></textarea>
+        </div>
+
+        <div class="submit-box">
+          <a href="index.html" class="back-btn">Volver a la página principal</a>
+          <button type="submit" id="btnEnviar">Enviar</button>
+        </div>
+      </form>
+
+      <div id="resultado" class="result" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <script>
+    // ====== CONFIGURACIÓN DE EMAILJS ======
+    // Pega aquí los 3 datos de tu cuenta de EmailJS (https://dashboard.emailjs.com):
+    //   Public Key  -> Account > General
+    //   Service ID  -> Email Services
+    //   Template ID -> Email Templates
+    const EMAILJS_PUBLIC_KEY = "uHbVZlm7FQ5qLpenZiP_L";
+    const EMAILJS_SERVICE_ID = "service_r1vu0t8";
+    const EMAILJS_TEMPLATE_ID = "template_hy0mh1h";
+    
+
+    // true = muestra el motivo técnico del fallo del correo (útil mientras pruebas). Ponlo en false al terminar.
+    const DEPURAR = true;
+
+    // Los comentarios también se guardan en Firebase (nodo "comentarios"), así no se pierde ninguno
+    // aunque falle el correo.
+    const firebaseConfig = {
+      apiKey: "AIzaSyCYVsh3pyVYBB9KBRIh0Y0NBFIcsLPkKkI",
+      authDomain: "arcade-arena-26.firebaseapp.com",
+      databaseURL: "https://arcade-arena-26-default-rtdb.firebaseio.com",
+      projectId: "arcade-arena-26",
+      storageBucket: "arcade-arena-26.firebasestorage.app",
+      messagingSenderId: "428418036939",
+      appId: "1:428418036939:web:523a7225e1077d8b50174e"
+    };
+    let db = null;
+    try {
+      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+    } catch (e) { console.error('Firebase no disponible:', e); }
+
+    const form = document.getElementById('formCuestionario');
+    const resultado = document.getElementById('resultado');
+    const btnEnviar = document.getElementById('btnEnviar');
+
+    function mostrar(texto, esError) {
+      resultado.textContent = texto;
+      resultado.classList.add('visible');
+      resultado.style.borderColor = esError ? 'rgba(192, 57, 43, 0.5)' : '';
+      resultado.style.background = esError ? 'rgba(192, 57, 43, 0.08)' : '';
+      resultado.style.color = esError ? '#7f1d1d' : '';
+    }
+
+    // Envía el aviso por correo con EmailJS (API REST, no necesita librería extra)
+    function enviarCorreo(nombre, mensaje, sugerencia) {
+      if (EMAILJS_PUBLIC_KEY.indexOf('uHbVZlm7FQ5qLpenZiP_L') !== -1 ||
+          EMAILJS_SERVICE_ID.indexOf('service_r1vu0t8') !== -1 ||
+          EMAILJS_TEMPLATE_ID.indexOf('template_hy0mh1h') !== -1) {
+        return Promise.reject(new Error('Faltan las claves de EmailJS en preguntas.html.'));
+      }
+      return fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: EMAILJS_SERVICE_ID,
+          template_id: EMAILJS_TEMPLATE_ID,
+          user_id: EMAILJS_PUBLIC_KEY,
+          template_params: {
+            nombre: nombre,
+            opinion: mensaje || 'Sin comentario.',
+            sugerencia: sugerencia || 'Sin sugerencia.',
+            fecha: new Date().toLocaleString('es-CL')
+          }
+        })
+      }).then(function (r) {
+        return r.text().then(function (t) {
+          if (!r.ok) throw new Error('EmailJS respondió ' + r.status + ': ' + t);
+        });
+      });
+    }
+
+    function guardarComentario(nombre, mensaje, sugerencia) {
+      if (!db) return Promise.reject(new Error('Firebase no disponible.'));
+      return db.ref('comentarios').push({
+        nombre: nombre,
+        opinion: mensaje || '',
+        sugerencia: sugerencia || '',
+        fecha: new Date().toLocaleDateString('es-CL'),
+        hora: new Date().toLocaleTimeString('es-CL')
+      });
+    }
+
+    function motivo(r) {
+      var m = (r.reason && r.reason.message) ? r.reason.message : String(r.reason);
+      if (/failed to fetch|networkerror|load failed/i.test(m)) {
+        m += ' (El navegador no pudo conectar con el servicio; revisa tu conexión o bloqueadores de anuncios.)';
+      }
+      return m;
+    }
+
+    form.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById('nombre').value.trim();
+      const mensaje = document.getElementById('mensaje').value.trim();
+      const sugerencia = document.getElementById('sugerencia').value.trim();
+
+      if (!mensaje && !sugerencia) {
+        mostrar('Escribe al menos un comentario o una sugerencia antes de enviar.', true);
+        return;
+      }
+
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando...';
+
+      Promise.allSettled([
+        enviarCorreo(nombre, mensaje, sugerencia),
+        guardarComentario(nombre, mensaje, sugerencia)
+      ])
+        .then(function (res) {
+          var correo = res[0], guardado = res[1];
+          if (correo.status === 'rejected') console.error('Fallo el correo:', correo.reason);
+          if (guardado.status === 'rejected') console.error('Fallo Firebase:', guardado.reason);
+
+          if (correo.status === 'fulfilled' || guardado.status === 'fulfilled') {
+            var texto = '¡Gracias por participar! Tu comentario fue recibido.';
+            if (DEPURAR && correo.status === 'rejected') texto += ' [Aviso por correo falló: ' + motivo(correo) + ']';
+            mostrar(texto, false);
+            form.reset();
+          } else {
+            var detalle = DEPURAR ? ' [Correo: ' + motivo(correo) + ' | Firebase: ' + motivo(guardado) + ']' : '';
+            mostrar('No se pudo enviar tu comentario. Intenta de nuevo en unos minutos.' + detalle, true);
+          }
+        })
+        .finally(function () {
+          btnEnviar.disabled = false;
+          btnEnviar.textContent = 'Enviar';
+        });
+    });
+  </script>
+</body>
+</html>

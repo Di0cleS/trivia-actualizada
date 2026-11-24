@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <meta name="theme-color" content="#2b2f36">
+    <title>Biografías | Personajes importantes</title>
+
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+
+        @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+
+        * { box-sizing: border-box; }
+
+
+        body {
+            min-width: 320px;
+            min-height: 100vh;
+            margin: 0;
+
+            background:
+                radial-gradient(circle at 12% 12%, rgba(255, 255, 255, 0.32) 0%, transparent 22%),
+                radial-gradient(circle at 85% 8%, rgba(255, 255, 255, 0.24) 0%, transparent 18%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.2) 0%, transparent 26%),
+                radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.16) 0%, transparent 24%),
+                linear-gradient(160deg, #3a3f48, #2b2f36 55%, #202328);
+            color: #ffffff;
+            font-family: "DM Sans", sans-serif;
+        }
+
+
+        .page-shell {
+            width: min(930px, calc(100% - 40px));
+            min-height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+
+        .topbar {
+            min-height: 82px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+        }
+
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            color: #ffffff;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+        }
+
+
+        .brand-mark {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: 1px solid #2b2f36;
+            border-radius: 10px;
+            background: linear-gradient(145deg, #2b2f36, #1d2025);
+            box-shadow: 0 0 24px rgba(200, 144, 42, 0.3);
+        }
+
+
+        .brand-mark { overflow: hidden; }
+        .brand-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+
+        .brand-light { color: rgba(255, 255, 255, 0.72); font-weight: 400; }
+
+
+        .nav-link {
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 9px;
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+
+        .intro {
+            padding: 72px 0 36px;
+            text-align: center;
+        }
+
+
+        .eyebrow {
+            margin: 0 0 14px;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+        }
+
+
+        h1, h2, p { margin-top: 0; }
+
+
+        h1 {
+            margin-bottom: 12px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(36px, 6vw, 56px);
+            letter-spacing: -0.055em;
+            line-height: 1.08;
+        }
+
+
+        h1 span { color: #f0cf8e; }
+
+
+        .intro-copy {
+            max-width: 620px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+
+        .bio-list {
+            display: grid;
+            gap: 18px;
+            padding-bottom: 34px;
+        }
+
+
+        .bio-card {
+            padding: clamp(20px, 4vw, 32px);
+            border: 1px solid rgba(27, 30, 35, 0.12);
+            border-radius: 16px;
+            background: linear-gradient(155deg, #ffffff, #f4f4f5 70%);
+            box-shadow: 0 18px 42px rgba(20, 22, 26, 0.1);
+        }
+
+
+        .bio-label {
+            margin-bottom: 10px;
+            color: #9a6a12;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+        }
+
+
+        .bio-card h2 {
+            color: #1b1e23;
+            margin-bottom: 14px;
+            font-family: "Space Grotesk", sans-serif;
+            font-size: clamp(24px, 4vw, 32px);
+        }
+
+
+        .bio-card p {
+            margin-bottom: 12px;
+            color: #454a52;
+            font-size: 15px;
+            line-height: 1.8;
+        }
+
+
+        .bio-card p:last-child { margin-bottom: 0; }
+
+
+        .note { color: #5a606b !important; font-size: 13px !important; }
+
+
+        .pending {
+            border-style: dashed;
+            border-color: rgba(200, 144, 42, 0.35);
+            background: rgba(27, 30, 35, 0.03);
+        }
+
+
+        .pending .bio-label { color: #f0cf8e !important; }
+        .pending h2 { color: #ffffff; }
+        .pending p { color: rgba(255, 255, 255, 0.85); }
+
+
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-top: auto;
+            padding: 24px 0;
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+        }
+
+
+        a:focus-visible {
+            outline: 2px solid #ffffff;
+            outline-offset: 4px;
+        }
+
+
+        @media (max-width: 600px) {
+            .page-shell { width: min(100% - 32px, 500px); }
+            .topbar { min-height: 72px; }
+            .intro { padding: 54px 0 30px; }
+            .brand { font-size: 12px; }
+            .nav-link { padding: 9px 10px; font-size: 11px; }
+            .footer { font-size: 8px; letter-spacing: 0.08em; }
+        }
+
+
+        .bio-points {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border: 1px solid rgba(200, 144, 42, 0.25);
+            border-radius: 12px;
+            background: rgba(200, 144, 42, 0.06);
+        }
+
+        .bio-points-title {
+            margin: 0 0 8px;
+            color: #9a6a12;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .bio-points ul {
+            margin: 0;
+            padding-left: 18px;
+            color: #2f333a;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .bio-points li {
+            margin-bottom: 4px;
+        }
+
+        .bio-points li:last-child {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="page-shell">
+
+
+        <header class="topbar">
+
+            <a class="brand" href="index.html" aria-label="Volver al inicio">
+                <span class="brand-mark" aria-hidden="true"><img src="logo.png" alt=""></span>
+                <span>Explocion<span class="brand-light">ARENA</span></span>
+            </a>
+
+            <a class="nav-link" href="index.html">Volver a personajes ↗</a>
+        </header>
+
+
+        <section class="intro">
+            <p class="eyebrow">ARCHIVO DE PERSONAJES</p>
+            <h1>Biografías <span>e historias</span></h1>
+            <p class="intro-copy">Conoce el contexto de los personajes y figuras que aparecen en la página.</p>
+        </section>
+
+
+        <section class="bio-list" aria-label="Biografías">
+
+
+            <article class="bio-card" id="Carlos cazsley">
+                <p class="bio-label">Personajes de Futbol</p>
+                <h2>carlos cazsley </h2>
+                <p>carlos cazsley es un jugador de fútbol Chileno, conocido por su desempeño en el club Colo Colo y su participación en la selección nacional.</p>
+                <p>Ha sido una figura destacada en el fútbol chileno, con una carrera que incluye importantes títulos y reconocimientos a nivel nacional e internacional.</p>
+                <p class="note">Carlos Cazely es un personaje real, no ficticio, y ha dejado una huella significativa en el mundo del fútbol.</p>
+                <div class="bio-points">
+                    <p class="bio-points-title">Puntos importantes</p>
+                    <ul>
+                        <li>Es un personaje real, no ficticio.</li>
+                        <li>Ha tenido una carrera exitosa en el fútbol chileno.</li>
+                        <li>Ha representado a la selección nacional de Chile.</li>
+                    </ul>
+                </div>
+            </article>
+
+
+            
+            <article class="bio-card" id="Cristiano Ronaldo">
+                <p class="bio-label">Personajes de Futbol</p>
+                <h2>Cristiano Ronaldo</h2>
+                <p>Cristiano Ronaldo es un jugador de fútbol portugués, conocido por su desempeño en el club Manchester United tanto como en real madrid y su participación en la selección nacional.</p>
+                <p>Ha sido una figura destacada en el fútbol internacional, con una carrera que incluye importantes títulos y reconocimientos a nivel nacional e internacional.</p>
+                <p class="note">Cristiano Ronaldo es un personaje real, no ficticio, y ha dejado una huella significativa en el mundo del fútbol.</p>
+                <div class="bio-points">
+                    <p class="bio-points-title">Puntos importantes</p>
+                    <ul>
+                        <li>Es un personaje real, no ficticio.</li>
+                        <li>Ha tenido una carrera exitosa en el fútbol portugués.</li>
+                        <li>Ha representado a la selección nacional de Portugal.</li>
+                    </ul>
+                </div>
+            </article>
+
+
+
+            <article class="bio-card" id="samurais">
+                <p class="bio-label">HISTORIA DE JAPÓN · GRUPO SOCIAL Y MILITAR</p>
+                <h2>Los samuráis</h2>
+                <p>Los samuráis fueron una clase de guerreros de Japón que prestaba servicio a señores feudales, conocidos como <em>daimios</em>. No fueron una sola persona, sino un grupo social que tuvo distintas funciones e importancia a lo largo de varios siglos.</p>
+                <p>Con el tiempo, algunos samuráis llegaron a ocupar puestos de gobierno y administración. Se los asocia especialmente con la katana, aunque su equipo y sus tareas cambiaron según la época. El llamado <em>bushidō</em>, o “camino del guerrero”, reúne ideales vinculados con su conducta; sus principios no fueron idénticos para todos ni permanecieron iguales en toda la historia.</p>
+                <p>Durante la modernización de Japón en el período Meiji, a partir de la segunda mitad del siglo XIX, se transformó el antiguo sistema feudal y la clase samurái perdió su estatus oficial.</p>
+                <div class="bio-points">
+                    <p class="bio-points-title">Puntos importantes</p>
+                    <ul>
+                        <li>Fueron una clase guerrera de Japón, no una sola persona.</li>
+                        <li>Servían a señores feudales (daimios) y seguían el código conocido como bushidō.</li>
+                        <li>Perdieron su estatus oficial con la modernización del período Meiji (siglo XIX).</li>
+                    </ul>
+                </div>
+            </article>
+
+
+            <article class="bio-card pending" id="tercero">
+                <p class="bio-label">PRÓXIMAMENTE</p>
+                <h2>Tercer personaje</h2>
+                <p>Este espacio queda reservado para la figura que elijas más adelante.</p>
+            </article>
+
+        </section>
+
+
+        <footer class="footer">
+            <span>EXPLOCION ARENA / BIOGRAFÍAS</span>
+            <span>ELIGE. DESCUBRE. JUEGA.</span>
+        </footer>
+
+    </main>
+</body>
+</html>
