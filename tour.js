@@ -73,7 +73,7 @@
             element: '#zona-juegos',
             popover: {
                 title: 'Zona de juegos',
-                description: 'Aquí están las categorías de personajes. Cada tarjeta es una trivia distinta.<br>Toca la imagen para jugar o "Ver perfil" para leer su historia.',
+                description: 'Aquí están las categorías de personajes. Cada tarjeta es una trivia distinta.<br>Toca la imagen para jugar.',
                 side: 'top', align: 'center'
             }
         },
