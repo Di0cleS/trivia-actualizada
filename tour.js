@@ -39,7 +39,7 @@
         popoverClass: 'tour-arena'    // estilos en tour.css
     };
     var CLAVE_LOGIN = 'arenaGuiaLoginVista';   // marca guardada en el navegador
-    var CLAVE_JUEGO = 'arenaGuiaJuegoVista';
+    var CLAVE_JUEGO = 'arenaGuiaJuegoVistaV2';
 
     /* ---------- 3. PASOS DE LA PANTALLA DE ACCESO ---------- */
     var PASOS_LOGIN = [
@@ -70,11 +70,22 @@
 
     var PASOS_JUEGO = [
         {
-            element: '#zona-juegos',
-            popover: {
-                title: 'Zona de juegos',
-                description: 'Aquí están las categorías de personajes. Cada tarjeta es una trivia distinta.<br>Toca la imagen para jugar.',
-                side: 'top', align: 'center'
+            element: '.card-five',
+            popover: function () {
+                // Usa los valores reales definidos en index.html.
+                var inicio = (typeof RELOJ_INICIO === 'number') ? RELOJ_INICIO : 15;
+                var bono = (typeof RELOJ_BONUS === 'number') ? RELOJ_BONUS : 10;
+                var penal = (typeof RELOJ_PENAL === 'number') ? RELOJ_PENAL : 5;
+                return {
+                    title: '⏱ Modo Contra reloj',
+                    description:
+                        '¡Aquí cada segundo cuenta!<br><br>' +
+                        '🚀 Empiezas con <b>' + inicio + ' segundos</b>.<br>' +
+                        '✅ Cada acierto suma <b>+' + bono + ' s</b>.<br>' +
+                        '❌ Cada error resta <b>−' + penal + ' s</b>.<br>' +
+                        '🏁 La partida termina cuando el reloj llega a 0.',
+                    side: 'top', align: 'center'
+                };
             }
         },
         {
